@@ -1,5 +1,6 @@
 package com.taligado.energy.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,6 +28,7 @@ public class Empresa {
     @Column(name = "segmento", length = 40)
     private String segmento;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "data_fundacao")
     private Date dataFundacao;
 

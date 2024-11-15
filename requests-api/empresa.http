@@ -1,0 +1,13 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/empresas
+Content-Type: application/json
+Accept: application/json
+
+{
+  "nome": "Amazon",
+  "email": "contato@amazon.com",
+  "cnpj": "12.345.678/0001-90",
+  "segmento": "E-commerce",
+  "dataFundacao": "1994-07-05"
+}
