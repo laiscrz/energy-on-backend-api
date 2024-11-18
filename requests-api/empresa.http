@@ -11,3 +11,33 @@ Accept: application/json
   "segmento": "E-commerce",
   "dataFundacao": "1994-07-05"
 }
+
+###
+GET {{WebApi_HostAddress}}/api/empresas
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/empresas/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/empresas/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "nome": "Amazon Brasil",
+  "email": "contato@amazon.com",
+  "cnpj": "12.345.678/0001-90",
+  "segmento": "E-commerce",
+  "dataFundacao": "1994-07-05"
+}
+
+###
+DELETE {{WebApi_HostAddress}}/api/empresas/1
+Content-Type: application/json
+Accept: application/json

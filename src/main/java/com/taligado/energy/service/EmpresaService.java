@@ -1,6 +1,7 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.EmpresaDTO;
+import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.Empresa;
 import com.taligado.energy.repository.IEmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class EmpresaService {
     // Buscar empresa por ID e retornar como DTO
     public EmpresaDTO getEmpresaById(Integer id) {
         Optional<Empresa> empresa = empresaRepository.findById(id);
-        return empresa.map(this::mapToDTO).orElse(null); // Se não encontrar, retorna null
+        return empresa.map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com o ID: " + id));
     }
 
     // Salvar uma nova empresa e retornar como DTO
@@ -39,17 +41,20 @@ public class EmpresaService {
 
     // Atualizar uma empresa existente e retornar como DTO
     public EmpresaDTO updateEmpresa(Integer id, EmpresaDTO empresaDTO) {
-        if (empresaRepository.existsById(id)) {
-            empresaDTO.setIdempresa(id);
-            Empresa empresa = mapToEntity(empresaDTO);
-            Empresa updatedEmpresa = empresaRepository.save(empresa);
-            return mapToDTO(updatedEmpresa); // Retorna o DTO da empresa atualizada
+        if (!empresaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Empresa não encontrado com o ID: " + id);
         }
-        return null;
+        Empresa empresa = mapToEntity(empresaDTO);
+        empresa.setIdempresa(id);
+        Empresa empresaUpdated = empresaRepository.save(empresa);
+        return  mapToDTO(empresaUpdated);
     }
 
     // Excluir uma empresa
     public void deleteEmpresa(Integer id) {
+        if (!empresaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Empresa não encontrado com o ID: " + id);
+        }
         empresaRepository.deleteById(id);
     }
 
