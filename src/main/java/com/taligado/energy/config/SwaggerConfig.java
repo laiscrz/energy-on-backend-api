@@ -31,11 +31,7 @@ public class SwaggerConfig {
                         new Tag().name("Dispositivos").description("Operações relacionadas a Dispositivos"),
                         new Tag().name("Sensores").description("Operações relacionadas a Sensores"),
                         new Tag().name("Alertas").description("Operações relacionadas a Alertas"),
-                        new Tag().name("Regulação de Energia").description("Operações relacionadas a Reguladores de Energia"),
-                        new Tag().name("Histórico").description("Operações relacionadas ao Histórico de Consumo e Emissões"),
-                        new Tag().name("Criação").description("Operações de criação"),
-                        new Tag().name("Leitura").description("Operações de leitura"),
-                        new Tag().name("Atualização").description("Operações de atualização"),
-                        new Tag().name("Exclusão").description("Operações de exclusão")));
+                        new Tag().name("Regulações de Energia").description("Operações relacionadas a Reguladores de Energia"),
+                        new Tag().name("Históricos").description("Operações relacionadas ao Histórico de Consumo e Emissões")));
     }
 }
