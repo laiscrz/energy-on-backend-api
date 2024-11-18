@@ -1,6 +1,7 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.EnderecoDTO;
+import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.Endereco;
 import com.taligado.energy.repository.IEnderecoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class EnderecoService {
     // Buscar endereço por ID e retornar como DTO
     public EnderecoDTO getEnderecoById(Integer id) {
         Optional<Endereco> endereco = enderecoRepository.findById(id);
-        return endereco.map(this::mapToDTO).orElse(null);
+        return endereco.map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Endereço não encontrado com o ID: " + id));
     }
 
     // Salvar um novo endereço e retornar como DTO
@@ -39,17 +41,20 @@ public class EnderecoService {
 
     // Atualizar um endereço existente e retornar como DTO
     public EnderecoDTO updateEndereco(Integer id, EnderecoDTO enderecoDTO) {
-        if (enderecoRepository.existsById(id)) {
-            enderecoDTO.setIdendereco(id);
-            Endereco endereco = mapToEntity(enderecoDTO);
-            Endereco updatedEndereco = enderecoRepository.save(endereco);
-            return mapToDTO(updatedEndereco);
+        if (!enderecoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Endereço não encontrado com o ID: " + id);
         }
-        return null;
+        enderecoDTO.setIdendereco(id);
+        Endereco endereco = mapToEntity(enderecoDTO);
+        Endereco updatedEndereco = enderecoRepository.save(endereco);
+        return mapToDTO(updatedEndereco);
     }
 
     // Excluir um endereço
     public void deleteEndereco(Integer id) {
+        if (!enderecoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Endereço não encontrado com o ID: " + id);
+        }
         enderecoRepository.deleteById(id);
     }
 

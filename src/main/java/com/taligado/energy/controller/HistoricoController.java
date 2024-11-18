@@ -1,7 +1,6 @@
 package com.taligado.energy.controller;
 
 import com.taligado.energy.dto.HistoricoDTO;
-import com.taligado.energy.model.Historico;
 import com.taligado.energy.service.HistoricoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,7 +47,7 @@ public class HistoricoController {
             @ApiResponse(responseCode = "404", description = "Histórico não encontrado")
     })
     public ResponseEntity<HistoricoDTO> getHistoricoById(@PathVariable Integer id) {
-        Optional<HistoricoDTO> historico = historicoService.getHistoricoById(id);
+        Optional<HistoricoDTO> historico = Optional.ofNullable(historicoService.getHistoricoById(id));
         return historico.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
@@ -62,9 +61,9 @@ public class HistoricoController {
             @ApiResponse(responseCode = "201", description = "Histórico criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<HistoricoDTO> createHistorico(@RequestBody Historico historico) {
-        HistoricoDTO savedHistorico = historicoService.saveHistorico(historico);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedHistorico);
+    public ResponseEntity<HistoricoDTO> createHistorico(@RequestBody HistoricoDTO historicoDTO) {
+        HistoricoDTO createdHistorico = historicoService.saveHistorico(historicoDTO);
+        return new ResponseEntity<>(createdHistorico, HttpStatus.CREATED);
     }
 
     // Endpoint para atualizar um histórico existente
@@ -77,8 +76,8 @@ public class HistoricoController {
             @ApiResponse(responseCode = "200", description = "Histórico atualizado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Histórico não encontrado")
     })
-    public ResponseEntity<HistoricoDTO> updateHistorico(@PathVariable Integer id, @RequestBody Historico historicoDetails) {
-        HistoricoDTO updatedHistorico = historicoService.updateHistorico(id, historicoDetails);
+    public ResponseEntity<HistoricoDTO> updateHistorico(@PathVariable Integer id, @RequestBody HistoricoDTO historicoDetailsDTO) {
+        HistoricoDTO updatedHistorico = historicoService.updateHistorico(id, historicoDetailsDTO);
         return updatedHistorico != null ? ResponseEntity.ok(updatedHistorico)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }

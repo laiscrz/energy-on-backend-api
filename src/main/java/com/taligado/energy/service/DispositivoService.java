@@ -4,8 +4,8 @@ import com.taligado.energy.dto.DispositivoDTO;
 import com.taligado.energy.model.Dispositivo;
 import com.taligado.energy.model.Sensor;
 import com.taligado.energy.repository.IDispositivoRepository;
-import com.taligado.energy.repository.ISensorRepository; 
-import com.taligado.energy.repository.IFilialRepository; 
+import com.taligado.energy.repository.ISensorRepository;
+import com.taligado.energy.repository.IFilialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,23 +36,23 @@ public class DispositivoService {
     // Buscar dispositivo por ID e retornar como DTO
     public DispositivoDTO getDispositivoById(Integer id) {
         Optional<Dispositivo> dispositivo = dispositivoRepository.findById(id);
-        return dispositivo.map(this::mapToDTO).orElse(null); // Convertendo para DTO
+        return dispositivo.map(this::mapToDTO).orElse(null);
     }
 
     // Salvar um novo dispositivo e retornar como DTO
     public DispositivoDTO saveDispositivo(DispositivoDTO dispositivoDTO) {
-        Dispositivo dispositivo = mapToEntity(dispositivoDTO); // Convertendo DTO para entidade
+        Dispositivo dispositivo = mapToEntity(dispositivoDTO);
         Dispositivo savedDispositivo = dispositivoRepository.save(dispositivo);
-        return mapToDTO(savedDispositivo); // Convertendo a entidade salva para DTO
+        return mapToDTO(savedDispositivo);
     }
 
     // Atualizar um dispositivo existente e retornar como DTO
     public DispositivoDTO updateDispositivo(Integer id, DispositivoDTO dispositivoDTO) {
         if (dispositivoRepository.existsById(id)) {
             dispositivoDTO.setIddispositivo(id);
-            Dispositivo dispositivo = mapToEntity(dispositivoDTO); // Convertendo DTO para entidade
+            Dispositivo dispositivo = mapToEntity(dispositivoDTO);
             Dispositivo updatedDispositivo = dispositivoRepository.save(dispositivo);
-            return mapToDTO(updatedDispositivo); // Convertendo a entidade atualizada para DTO
+            return mapToDTO(updatedDispositivo);
         }
         return null;
     }
@@ -70,12 +70,12 @@ public class DispositivoService {
         dispositivoDTO.setTipo(dispositivo.getTipo());
         dispositivoDTO.setStatus(dispositivo.getStatus());
         dispositivoDTO.setDataInstalacao(dispositivo.getDataInstalacao());
-        dispositivoDTO.setFilialId(dispositivo.getFilial().getIdfilial()); // Mapeando o ID da filial
+        dispositivoDTO.setFilialId(dispositivo.getFilial().getIdfilial());
         dispositivoDTO.setPotenciaNominal(dispositivo.getPotenciaNominal());
 
         // Mapeando a lista de sensores para uma lista de IDs
         List<Integer> sensoresIds = dispositivo.getSensores().stream()
-                .map(Sensor::getIdsensor) // Obtendo o ID de cada sensor
+                .map(Sensor::getIdsensor)
                 .collect(Collectors.toList());
         dispositivoDTO.setSensoresIds(sensoresIds);
 
@@ -96,7 +96,7 @@ public class DispositivoService {
 
         // Mapeando a lista de sensores IDs para objetos de sensor
         List<Sensor> sensores = dispositivoDTO.getSensoresIds().stream()
-                .map(sensorId -> sensorRepository.findById(sensorId).orElse(null)) // Buscando os sensores pelos IDs
+                .map(sensorId -> sensorRepository.findById(sensorId).orElse(null))
                 .collect(Collectors.toList());
         dispositivo.setSensores(sensores);
 

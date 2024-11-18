@@ -1,10 +1,12 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.EmpresaDTO;
+import com.taligado.energy.exception.DataIntegrityException;
 import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.Empresa;
 import com.taligado.energy.repository.IEmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class EmpresaService {
     public EmpresaDTO saveEmpresa(EmpresaDTO empresaDTO) {
         Empresa empresa = mapToEntity(empresaDTO);
         Empresa savedEmpresa = empresaRepository.save(empresa);
-        return mapToDTO(savedEmpresa); // Retorna o DTO da empresa salva
+        return mapToDTO(savedEmpresa);
     }
 
     // Atualizar uma empresa existente e retornar como DTO
@@ -55,7 +57,11 @@ public class EmpresaService {
         if (!empresaRepository.existsById(id)) {
             throw new ResourceNotFoundException("Empresa não encontrado com o ID: " + id);
         }
-        empresaRepository.deleteById(id);
+        try {
+            empresaRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityException("Erro ao excluir a empresa. Ação violaria restrições de integridade referencial.");
+        }
     }
 
     // Método para converter Empresa para EmpresaDTO

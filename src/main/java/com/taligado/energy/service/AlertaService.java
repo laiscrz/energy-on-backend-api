@@ -1,6 +1,7 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.AlertaDTO;
+import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.Alerta;
 import com.taligado.energy.model.Sensor;
 import com.taligado.energy.repository.IAlertaRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AlertaService {
@@ -20,42 +22,48 @@ public class AlertaService {
     @Autowired
     private ISensorRepository sensorRepository;
 
-    // Buscar todos os alertas
+    // Buscar todos os alertas e retornar como DTOs
     public List<AlertaDTO> getAllAlertas() {
         List<Alerta> alertas = alertaRepository.findAll();
-        return alertas.stream().map(this::mapToDTO).toList();
+        return alertas.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Buscar alerta por ID
+    // Buscar alerta por ID e retornar como DTO
     public AlertaDTO getAlertaById(Integer id) {
         Optional<Alerta> alerta = alertaRepository.findById(id);
-        return alerta.map(this::mapToDTO).orElse(null);
+        return alerta.map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado com o ID: " + id));
     }
 
-    // Salvar um novo alerta
+    // Salvar um novo alerta e retornar como DTO
     public AlertaDTO saveAlerta(AlertaDTO alertaDTO) {
         Alerta alerta = mapToEntity(alertaDTO);
         Alerta savedAlerta = alertaRepository.save(alerta);
         return mapToDTO(savedAlerta);
     }
 
-    // Atualizar um alerta existente
-    public AlertaDTO updateAlerta(Integer id, AlertaDTO alertaDetails) {
-        if (alertaRepository.existsById(id)) {
-            alertaDetails.setIdalerta(id);
-            Alerta alerta = mapToEntity(alertaDetails);
-            Alerta updatedAlerta = alertaRepository.save(alerta);
-            return mapToDTO(updatedAlerta);
+    // Atualizar um alerta existente e retornar como DTO
+    public AlertaDTO updateAlerta(Integer id, AlertaDTO alertaDTO) {
+        if (!alertaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Alerta não encontrado com o ID: " + id);
         }
-        return null;
+        alertaDTO.setIdalerta(id);
+        Alerta alerta = mapToEntity(alertaDTO);
+        Alerta updatedAlerta = alertaRepository.save(alerta);
+        return mapToDTO(updatedAlerta);
     }
 
     // Excluir um alerta
     public void deleteAlerta(Integer id) {
+        if (!alertaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Alerta não encontrado com o ID: " + id);
+        }
         alertaRepository.deleteById(id);
     }
 
-    // Método de mapeamento de entidade para DTO
+    // Método para converter Alerta para AlertaDTO
     private AlertaDTO mapToDTO(Alerta alerta) {
         AlertaDTO alertaDTO = new AlertaDTO();
         alertaDTO.setIdalerta(alerta.getIdalerta());
@@ -66,7 +74,7 @@ public class AlertaService {
         return alertaDTO;
     }
 
-    // Método de mapeamento de DTO para entidade
+    // Método para converter AlertaDTO para Alerta
     private Alerta mapToEntity(AlertaDTO alertaDTO) {
         Alerta alerta = new Alerta();
         alerta.setDescricao(alertaDTO.getDescricao());

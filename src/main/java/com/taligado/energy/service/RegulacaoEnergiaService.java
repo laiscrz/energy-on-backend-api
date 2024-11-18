@@ -1,6 +1,7 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.RegulacaoEnergiaDTO;
+import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.RegulacaoEnergia;
 import com.taligado.energy.repository.IRegulacaoEnergiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class RegulacaoEnergiaService {
     // Buscar regulação de energia por ID e retornar como DTO
     public RegulacaoEnergiaDTO getRegulacaoById(Integer id) {
         Optional<RegulacaoEnergia> regulacaoEnergia = regulacaoEnergiaRepository.findById(id);
-        return regulacaoEnergia.map(this::mapToDTO).orElse(null);
+        return regulacaoEnergia.map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Regulação de energia não encontrada com o ID: " + id));
     }
 
     // Salvar uma nova regulação de energia e retornar como DTO
@@ -39,17 +41,20 @@ public class RegulacaoEnergiaService {
 
     // Atualizar uma regulação de energia existente e retornar como DTO
     public RegulacaoEnergiaDTO updateRegulacao(Integer id, RegulacaoEnergiaDTO regulacaoEnergiaDTO) {
-        if (regulacaoEnergiaRepository.existsById(id)) {
-            regulacaoEnergiaDTO.setIdregulacao(id);
-            RegulacaoEnergia regulacaoEnergia = mapToEntity(regulacaoEnergiaDTO);
-            RegulacaoEnergia updatedRegulacao = regulacaoEnergiaRepository.save(regulacaoEnergia);
-            return mapToDTO(updatedRegulacao);
+        if (!regulacaoEnergiaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Regulação de energia não encontrada com o ID: " + id);
         }
-        return null;
+        regulacaoEnergiaDTO.setIdregulacao(id);
+        RegulacaoEnergia regulacaoEnergia = mapToEntity(regulacaoEnergiaDTO);
+        RegulacaoEnergia updatedRegulacao = regulacaoEnergiaRepository.save(regulacaoEnergia);
+        return mapToDTO(updatedRegulacao);
     }
 
     // Excluir uma regulação de energia
     public void deleteRegulacao(Integer id) {
+        if (!regulacaoEnergiaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Regulação de energia não encontrada com o ID: " + id);
+        }
         regulacaoEnergiaRepository.deleteById(id);
     }
 

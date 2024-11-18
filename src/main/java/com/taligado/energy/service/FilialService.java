@@ -1,6 +1,7 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.FilialDTO;
+import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.Filial;
 import com.taligado.energy.model.Empresa;
 import com.taligado.energy.model.Endereco;
@@ -37,7 +38,8 @@ public class FilialService {
     // Buscar filial por ID e retornar como DTO
     public FilialDTO getFilialById(Integer id) {
         Optional<Filial> filial = filialRepository.findById(id);
-        return filial.map(this::mapToDTO).orElse(null);
+        return filial.map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Filial não encontrada com o ID: " + id));
     }
 
     // Salvar uma nova filial e retornar como DTO
@@ -49,17 +51,20 @@ public class FilialService {
 
     // Atualizar uma filial existente e retornar como DTO
     public FilialDTO updateFilial(Integer id, FilialDTO filialDTO) {
-        if (filialRepository.existsById(id)) {
-            filialDTO.setIdfilial(id);
-            Filial filial = mapToEntity(filialDTO);
-            Filial updatedFilial = filialRepository.save(filial);
-            return mapToDTO(updatedFilial);
+        if (!filialRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Filial não encontrada com o ID: " + id);
         }
-        return null;
+        filialDTO.setIdfilial(id);
+        Filial filial = mapToEntity(filialDTO);
+        Filial updatedFilial = filialRepository.save(filial);
+        return mapToDTO(updatedFilial);
     }
 
     // Excluir uma filial
     public void deleteFilial(Integer id) {
+        if (!filialRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Filial não encontrada com o ID: " + id);
+        }
         filialRepository.deleteById(id);
     }
 
@@ -89,7 +94,6 @@ public class FilialService {
         Optional<Endereco> endereco = enderecoRepository.findById(filialDTO.getEnderecoId());
 
         empresa.ifPresent(filial::setEmpresa);
-
         endereco.ifPresent(filial::setEndereco);
 
         return filial;

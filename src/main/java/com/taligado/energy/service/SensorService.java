@@ -1,8 +1,7 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.SensorDTO;
-import com.taligado.energy.model.Dispositivo;
-import com.taligado.energy.model.Historico;
+import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.Sensor;
 import com.taligado.energy.repository.ISensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,44 +17,49 @@ public class SensorService {
     @Autowired
     private ISensorRepository sensorRepository;
 
-
-    // Buscar todos os sensores e convertê-los para DTOs
+    // Buscar todos os sensores e retornar como DTOs
     public List<SensorDTO> getAllSensores() {
         List<Sensor> sensores = sensorRepository.findAll();
-        return sensores.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return sensores.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Buscar sensor por ID e convertê-lo para DTO
+    // Buscar sensor por ID e retornar como DTO
     public SensorDTO getSensorById(Integer id) {
         Optional<Sensor> sensor = sensorRepository.findById(id);
-        return sensor.map(this::convertToDTO).orElse(null);
+        return sensor.map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Sensor não encontrado com o ID: " + id));
     }
 
-    // Salvar um novo sensor
+    // Salvar um novo sensor e retornar como DTO
     public SensorDTO saveSensor(SensorDTO sensorDTO) {
-        Sensor sensor = convertToEntity(sensorDTO);
+        Sensor sensor = mapToEntity(sensorDTO);
         Sensor savedSensor = sensorRepository.save(sensor);
-        return convertToDTO(savedSensor);
+        return mapToDTO(savedSensor);
     }
 
-    // Atualizar um sensor existente
+    // Atualizar um sensor existente e retornar como DTO
     public SensorDTO updateSensor(Integer id, SensorDTO sensorDTO) {
-        if (sensorRepository.existsById(id)) {
-            sensorDTO.setIdsensor(id);
-            Sensor sensor = convertToEntity(sensorDTO);
-            Sensor updatedSensor = sensorRepository.save(sensor);
-            return convertToDTO(updatedSensor);
+        if (!sensorRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Sensor não encontrado com o ID: " + id);
         }
-        return null;
+        sensorDTO.setIdsensor(id);
+        Sensor sensor = mapToEntity(sensorDTO);
+        Sensor updatedSensor = sensorRepository.save(sensor);
+        return mapToDTO(updatedSensor);
     }
 
     // Excluir um sensor
     public void deleteSensor(Integer id) {
+        if (!sensorRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Sensor não encontrado com o ID: " + id);
+        }
         sensorRepository.deleteById(id);
     }
 
-    // Converter Sensor para SensorDTO
-    private SensorDTO convertToDTO(Sensor sensor) {
+    // Método para converter Sensor para SensorDTO
+    private SensorDTO mapToDTO(Sensor sensor) {
         SensorDTO sensorDTO = new SensorDTO();
         sensorDTO.setIdsensor(sensor.getIdsensor());
         sensorDTO.setTipo(sensor.getTipo());
@@ -64,24 +68,20 @@ public class SensorService {
         sensorDTO.setValorAtual(sensor.getValorAtual());
         sensorDTO.setTempoOperacao(sensor.getTempoOperacao());
 
-        List<Integer> dispositivosIds = sensor.getDispositivos().stream()
-                .map(Dispositivo::getIddispositivo)
-                .collect(Collectors.toList());
-        sensorDTO.setDispositivosIds(dispositivosIds);
+        // Assumindo que o Sensor tem listas de Dispositivos e Históricos que podem ser convertidos para IDs
+        sensorDTO.setDispositivosIds(sensor.getDispositivos().stream()
+                .map(dispositivo -> dispositivo.getIddispositivo())
+                .collect(Collectors.toList()));
 
-        List<Integer> historicosIds = sensor.getHistoricos().stream()
-                .map(Historico::getIdhistorico)
-                .collect(Collectors.toList());
-        sensorDTO.setHistoricosIds(historicosIds);
-
-
+        sensorDTO.setHistoricosIds(sensor.getHistoricos().stream()
+                .map(historico -> historico.getIdhistorico())
+                .collect(Collectors.toList()));
 
         return sensorDTO;
     }
 
-
-    // Converter SensorDTO para Sensor
-    private Sensor convertToEntity(SensorDTO sensorDTO) {
+    // Método para converter SensorDTO para Sensor
+    private Sensor mapToEntity(SensorDTO sensorDTO) {
         Sensor sensor = new Sensor();
         sensor.setIdsensor(sensorDTO.getIdsensor());
         sensor.setTipo(sensorDTO.getTipo());
