@@ -1,6 +1,6 @@
 package com.taligado.energy.controller;
 
-import com.taligado.energy.model.Empresa;
+import com.taligado.energy.dto.EmpresaDTO;
 import com.taligado.energy.service.EmpresaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/empresas")
@@ -19,28 +18,28 @@ public class EmpresaController {
 
     // Endpoint para buscar todas as empresas
     @GetMapping
-    public List<Empresa> getAllEmpresas() {
+    public List<EmpresaDTO> getAllEmpresas() {
         return empresaService.getAllEmpresas();
     }
 
     // Endpoint para buscar uma empresa por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Empresa> getEmpresaById(@PathVariable Integer id) {
-        Optional<Empresa> empresa = empresaService.getEmpresaById(id);
-        return empresa.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public ResponseEntity<EmpresaDTO> getEmpresaById(@PathVariable Integer id) {
+        EmpresaDTO empresa = empresaService.getEmpresaById(id);
+        return empresa != null ? ResponseEntity.ok(empresa) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     // Endpoint para salvar uma nova empresa
     @PostMapping
-    public ResponseEntity<Empresa> createEmpresa(@RequestBody Empresa empresa) {
-        Empresa savedEmpresa = empresaService.saveEmpresa(empresa);
+    public ResponseEntity<EmpresaDTO> createEmpresa(@RequestBody EmpresaDTO empresaDTO) {
+        EmpresaDTO savedEmpresa = empresaService.saveEmpresa(empresaDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEmpresa);
     }
 
     // Endpoint para atualizar uma empresa existente
     @PutMapping("/{id}")
-    public ResponseEntity<Empresa> updateEmpresa(@PathVariable Integer id, @RequestBody Empresa empresaDetails) {
-        Empresa updatedEmpresa = empresaService.updateEmpresa(id, empresaDetails);
+    public ResponseEntity<EmpresaDTO> updateEmpresa(@PathVariable Integer id, @RequestBody EmpresaDTO empresaDTO) {
+        EmpresaDTO updatedEmpresa = empresaService.updateEmpresa(id, empresaDTO);
         if (updatedEmpresa != null) {
             return ResponseEntity.ok(updatedEmpresa);
         } else {
@@ -55,4 +54,3 @@ public class EmpresaController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
-
