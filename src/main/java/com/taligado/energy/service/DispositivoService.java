@@ -1,6 +1,7 @@
 package com.taligado.energy.service;
 
 import com.taligado.energy.dto.DispositivoDTO;
+import com.taligado.energy.exception.ResourceNotFoundException;
 import com.taligado.energy.model.Dispositivo;
 import com.taligado.energy.model.Sensor;
 import com.taligado.energy.repository.IDispositivoRepository;
@@ -46,16 +47,35 @@ public class DispositivoService {
         return mapToDTO(savedDispositivo);
     }
 
-    // Atualizar um dispositivo existente e retornar como DTO
     public DispositivoDTO updateDispositivo(Integer id, DispositivoDTO dispositivoDTO) {
-        if (dispositivoRepository.existsById(id)) {
-            dispositivoDTO.setIddispositivo(id);
-            Dispositivo dispositivo = mapToEntity(dispositivoDTO);
-            Dispositivo updatedDispositivo = dispositivoRepository.save(dispositivo);
-            return mapToDTO(updatedDispositivo);
-        }
-        return null;
+        // Buscar o dispositivo existente
+        Dispositivo dispositivoExistente = dispositivoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dispositivo não encontrado com o ID: " + id));
+
+        // Atualizar os campos do dispositivo existente
+        dispositivoExistente.setNome(dispositivoDTO.getNome());
+        dispositivoExistente.setTipo(dispositivoDTO.getTipo());
+        dispositivoExistente.setStatus(dispositivoDTO.getStatus());
+        dispositivoExistente.setDataInstalacao(dispositivoDTO.getDataInstalacao());
+        dispositivoExistente.setPotenciaNominal(dispositivoDTO.getPotenciaNominal());
+
+        // Atualizar a filial
+        dispositivoExistente.setFilial(filialRepository.findById(dispositivoDTO.getFilialId())
+                .orElseThrow(() -> new ResourceNotFoundException("Filial não encontrada com o ID: " + dispositivoDTO.getFilialId())));
+
+        // Atualizar a lista de sensores
+        List<Sensor> sensores = dispositivoDTO.getSensoresIds().stream()
+                .map(sensorId -> sensorRepository.findById(sensorId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Sensor não encontrado com o ID: " + sensorId)))
+                .collect(Collectors.toList());
+        dispositivoExistente.setSensores(sensores);
+
+        // Salvar a entidade atualizada
+        Dispositivo updatedDispositivo = dispositivoRepository.save(dispositivoExistente);
+
+        return mapToDTO(updatedDispositivo);
     }
+
 
     // Excluir um dispositivo
     public void deleteDispositivo(Integer id) {

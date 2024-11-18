@@ -1,0 +1,42 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/alertas
+Content-Type: application/json
+Accept: application/json
+
+{
+    "descricao": "Alerta de sobrecarga de energia",
+    "severidade": "Alta",
+    "dataAlerta": "2024-11-15T03:00:00.000+00:00",
+    "sensorId": 1
+}
+
+###
+
+GET {{WebApi_HostAddress}}/api/alertas
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/alertas/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/alertas/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "descricao": "Alerta de sobrecarga de energia",
+    "severidade": "Moderada",
+    "dataAlerta": "2024-11-15T03:00:00.000+00:00",
+    "sensorId": 1
+}
+
+###
+DELETE {{WebApi_HostAddress}}/api/alertas/1
+Content-Type: application/json
+Accept: application/json

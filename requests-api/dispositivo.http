@@ -1,0 +1,53 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/dispositivos
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nome": "LG Split",
+    "tipo": "Ar-condicionado",
+    "status": "Ativo",
+    "dataInstalacao": "2024-01-15T03:00:00.000+00:00",
+    "filialId": 1,
+    "potenciaNominal": 2.5,
+    "sensoresIds": [
+        1
+    ]
+}
+
+
+###
+
+GET {{WebApi_HostAddress}}/api/dispositivos
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/dispositivos/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/dispositivos/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nome": "LG Split",
+    "tipo": "Ar-condicionado",
+    "status": "Ativo",
+    "dataInstalacao": "2024-01-15T03:00:00.000+00:00",
+    "filialId": 1,
+    "potenciaNominal": 3.5,
+    "sensoresIds": [
+        1
+    ]
+}
+
+###
+DELETE {{WebApi_HostAddress}}/api/dispositivos/1
+Content-Type: application/json
+Accept: application/json

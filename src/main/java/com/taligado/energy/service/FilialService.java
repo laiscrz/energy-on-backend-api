@@ -49,16 +49,30 @@ public class FilialService {
         return mapToDTO(savedFilial);
     }
 
-    // Atualizar uma filial existente e retornar como DTO
     public FilialDTO updateFilial(Integer id, FilialDTO filialDTO) {
-        if (!filialRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Filial não encontrada com o ID: " + id);
-        }
-        filialDTO.setIdfilial(id);
-        Filial filial = mapToEntity(filialDTO);
-        Filial updatedFilial = filialRepository.save(filial);
+        // Buscar a entidade existente
+        Filial filialExistente = filialRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Filial não encontrada com o ID: " + id));
+
+        // Atualizar os campos da entidade existente com os valores do DTO
+        filialExistente.setNome(filialDTO.getNome());
+        filialExistente.setTipo(filialDTO.getTipo());
+        filialExistente.setCnpjFilial(filialDTO.getCnpjFilial());
+        filialExistente.setAreaOperacional(filialDTO.getAreaOperacional());
+
+        // Buscar e atualizar empresa e endereço, se necessário
+        Optional<Empresa> empresa = empresaRepository.findById(filialDTO.getEmpresaId());
+        Optional<Endereco> endereco = enderecoRepository.findById(filialDTO.getEnderecoId());
+
+        empresa.ifPresent(filialExistente::setEmpresa);
+        endereco.ifPresent(filialExistente::setEndereco);
+
+        // Salvar a entidade atualizada
+        Filial updatedFilial = filialRepository.save(filialExistente);
+
         return mapToDTO(updatedFilial);
     }
+
 
     // Excluir uma filial
     public void deleteFilial(Integer id) {

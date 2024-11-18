@@ -39,16 +39,24 @@ public class EnderecoService {
         return mapToDTO(savedEndereco);
     }
 
-    // Atualizar um endereço existente e retornar como DTO
     public EnderecoDTO updateEndereco(Integer id, EnderecoDTO enderecoDTO) {
-        if (!enderecoRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Endereço não encontrado com o ID: " + id);
-        }
-        enderecoDTO.setIdendereco(id);
-        Endereco endereco = mapToEntity(enderecoDTO);
-        Endereco updatedEndereco = enderecoRepository.save(endereco);
+        // Buscar o endereço existente
+        Endereco enderecoExistente = enderecoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Endereço não encontrado com o ID: " + id));
+
+        // Atualizar os campos do endereço existente com os valores do DTO
+        enderecoExistente.setLogadouro(enderecoDTO.getLogadouro());
+        enderecoExistente.setCidade(enderecoDTO.getCidade());
+        enderecoExistente.setEstado(enderecoDTO.getEstado());
+        enderecoExistente.setCep(enderecoDTO.getCep());
+        enderecoExistente.setPais(enderecoDTO.getPais());
+
+        // Salvar a entidade atualizada
+        Endereco updatedEndereco = enderecoRepository.save(enderecoExistente);
+
         return mapToDTO(updatedEndereco);
     }
+
 
     // Excluir um endereço
     public void deleteEndereco(Integer id) {

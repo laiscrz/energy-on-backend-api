@@ -1,0 +1,46 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/filiais
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nome": "Filial SP",
+    "tipo": "Centro de Distribuição",
+    "cnpjFilial": "12.345.678/0001-90",
+    "areaOperacional": "Logística",
+    "empresaId": 1,
+    "enderecoId": 1
+}
+
+###
+
+GET {{WebApi_HostAddress}}/api/filiais
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/filiais/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/filiais/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nome": "Filial São Paulo",
+    "tipo": "Centro de Distribuição",
+    "cnpjFilial": "12.345.678/0001-90",
+    "areaOperacional": "Logística",
+    "empresaId": 1,
+    "enderecoId": 1
+}
+
+###
+DELETE {{WebApi_HostAddress}}/api/empresas/1
+Content-Type: application/json
+Accept: application/json

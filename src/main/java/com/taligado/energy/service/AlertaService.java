@@ -44,16 +44,31 @@ public class AlertaService {
         return mapToDTO(savedAlerta);
     }
 
-    // Atualizar um alerta existente e retornar como DTO
     public AlertaDTO updateAlerta(Integer id, AlertaDTO alertaDTO) {
-        if (!alertaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Alerta não encontrado com o ID: " + id);
+        // Buscar o alerta existente
+        Alerta alertaExistente = alertaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado com o ID: " + id));
+
+        // Atualizar os campos do alerta existente
+        alertaExistente.setDescricao(alertaDTO.getDescricao());
+        alertaExistente.setSeveridade(alertaDTO.getSeveridade());
+        alertaExistente.setDataAlerta(alertaDTO.getDataAlerta());
+
+        // Atualizar o sensor relacionado, se fornecido
+        if (alertaDTO.getSensorId() != null) {
+            Sensor sensor = sensorRepository.findById(alertaDTO.getSensorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Sensor não encontrado com o ID: " + alertaDTO.getSensorId()));
+            alertaExistente.setSensor(sensor);
+        } else {
+            alertaExistente.setSensor(null);
         }
-        alertaDTO.setIdalerta(id);
-        Alerta alerta = mapToEntity(alertaDTO);
-        Alerta updatedAlerta = alertaRepository.save(alerta);
+
+        // Salvar a entidade atualizada
+        Alerta updatedAlerta = alertaRepository.save(alertaExistente);
+
         return mapToDTO(updatedAlerta);
     }
+
 
     // Excluir um alerta
     public void deleteAlerta(Integer id) {

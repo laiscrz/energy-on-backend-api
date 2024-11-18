@@ -1,0 +1,44 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/enderecos
+Content-Type: application/json
+Accept: application/json
+
+{
+    "logadouro": "Avenida Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "cep": "01310-000",
+    "pais": "Brasil"
+}
+
+###
+
+GET {{WebApi_HostAddress}}/api/enderecos
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/enderecos/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/enderecos/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "logadouro": "Avenida Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "cep": "01314-000",
+    "pais": "Brasil"
+}
+
+###
+DELETE {{WebApi_HostAddress}}/api/enderecos/1
+Content-Type: application/json
+Accept: application/json
