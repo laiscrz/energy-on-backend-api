@@ -22,7 +22,7 @@ public class SwaggerConfig {
                         .version("1.0.0")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .servers(List.of(
-                        new Server().url("https://localhost:8080")
+                        new Server().url("http://localhost:8080")
                                 .description("Servidor Local para desenvolvimento")))
                 .tags(List.of(
                         new Tag().name("Empresas").description("Operações relacionadas a Empresas"),

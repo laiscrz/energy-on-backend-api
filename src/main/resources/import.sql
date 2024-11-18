@@ -1,10 +1,10 @@
-INSERT INTO empresa (idempresa, nome, email, cnpj, segmento, data_fundacao) VALUES (1, 'Amazon', 'contato@amazon.com', '12.345.678/0001-90', 'E-commerce', '1994-07-05');
-INSERT INTO endereco (idendereco, logadouro, cidade, estado, cep, pais) VALUES (1, 'Avenida Paulista', 'São Paulo', 'SP', '01310-000', 'Brasil');
-INSERT INTO filial (idfilial, empresa_idempresa, endereco_idendereco, cnpj_filial, area_operacional, tipo, nome) VALUES (1, 1, 1, '12.345.678/0001-90', 'Logística', 'Centro de Distribuição', 'Filial SP');
-INSERT INTO dispositivo (iddispositivo, filial_idfilial, potencia_nominal, data_instalacao, status, tipo, nome) VALUES (1, 1, 2.5, '2024-01-15', 'Ativo', 'Ar-condicionado', 'LG Split');
-INSERT INTO sensor (idsensor, tipo, descricao, unidade, valor_atual, tempo_operacao) VALUES (1, 'Temperatura', 'Sensor de Temperatura Ambiente', '°C', 22.5, 300);
-INSERT INTO alerta (idalerta, sensor_idsensor, data_alerta, severidade, descricao) VALUES (1, 1, '2024-11-15', 'Alta', 'Alerta de sobrecarga de energia');
-INSERT INTO regulacao_energia (idregulacao, tarifa_kwh, nome_bandeira, tarifa_adicional_bandeira, data_atualizacao) VALUES (1, 0.45, 'Verde', 0.00, '2024-11-01');
-INSERT INTO historico (idhistorico, valor_consumo_kwh, intensidade_carbono, custo_energia_estimado, regulacao_energia_idregulacao, data_criacao) VALUES (1, 250.5, 0.5, 120.75, 1, '2024-11-15');
+INSERT INTO empresa (nome, email, cnpj, segmento, data_fundacao) VALUES ('Amazon', 'contato@amazon.com', '12.345.678/0001-90', 'E-commerce', '1994-07-05');
+INSERT INTO endereco ( logadouro, cidade, estado, cep, pais) VALUES ('Avenida Paulista', 'São Paulo', 'SP', '01310-000', 'Brasil');
+INSERT INTO filial ( empresa_idempresa, endereco_idendereco, cnpj_filial, area_operacional, tipo, nome) VALUES ( 1, 1, '12.345.678/0001-90', 'Logística', 'Centro de Distribuição', 'Filial SP');
+INSERT INTO dispositivo ( filial_idfilial, potencia_nominal, data_instalacao, status, tipo, nome) VALUES ( 1, 2.5, '2024-01-15', 'Ativo', 'Ar-condicionado', 'LG Split');
+INSERT INTO sensor ( tipo, descricao, unidade, valor_atual, tempo_operacao) VALUES ( 'Temperatura', 'Sensor de Temperatura Ambiente', '°C', 22.5, 300);
+INSERT INTO alerta ( sensor_idsensor, data_alerta, severidade, descricao) VALUES ( '2024-11-15', 'Alta', 'Alerta de sobrecarga de energia');
+INSERT INTO regulacao_energia ( tarifa_kwh, nome_bandeira, tarifa_adicional_bandeira, data_atualizacao) VALUES ( 0.45, 'Verde', 0.00, '2024-11-01');
+INSERT INTO historico ( valor_consumo_kwh, intensidade_carbono, custo_energia_estimado, regulacao_energia_idregulacao, data_criacao) VALUES ( 250.5, 0.5, 120.75, 1, '2024-11-15');
 INSERT INTO dispositivo_sensor (dispositivo_iddispositivo, sensor_idsensor) VALUES (1, 1);
 INSERT INTO historico_sensor (historico_idhistorico, sensor_idsensor) VALUES (1, 1);
