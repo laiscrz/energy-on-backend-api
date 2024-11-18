@@ -1,5 +1,6 @@
 package com.taligado.energy.controller;
 
+import com.taligado.energy.dto.HistoricoDTO;
 import com.taligado.energy.model.Historico;
 import com.taligado.energy.service.HistoricoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,28 +20,28 @@ public class HistoricoController {
 
     // Endpoint para buscar todos os históricos
     @GetMapping
-    public List<Historico> getAllHistoricos() {
+    public List<HistoricoDTO> getAllHistoricos() {
         return historicoService.getAllHistoricos();
     }
 
     // Endpoint para buscar um histórico por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Historico> getHistoricoById(@PathVariable Integer id) {
-        Optional<Historico> historico = historicoService.getHistoricoById(id);
+    public ResponseEntity<HistoricoDTO> getHistoricoById(@PathVariable Integer id) {
+        Optional<HistoricoDTO> historico = historicoService.getHistoricoById(id);
         return historico.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     // Endpoint para salvar um novo histórico
     @PostMapping
-    public ResponseEntity<Historico> createHistorico(@RequestBody Historico historico) {
-        Historico savedHistorico = historicoService.saveHistorico(historico);
+    public ResponseEntity<HistoricoDTO> createHistorico(@RequestBody Historico historico) {
+        HistoricoDTO savedHistorico = historicoService.saveHistorico(historico);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedHistorico);
     }
 
     // Endpoint para atualizar um histórico existente
     @PutMapping("/{id}")
-    public ResponseEntity<Historico> updateHistorico(@PathVariable Integer id, @RequestBody Historico historicoDetails) {
-        Historico updatedHistorico = historicoService.updateHistorico(id, historicoDetails);
+    public ResponseEntity<HistoricoDTO> updateHistorico(@PathVariable Integer id, @RequestBody Historico historicoDetails) {
+        HistoricoDTO updatedHistorico = historicoService.updateHistorico(id, historicoDetails);
         if (updatedHistorico != null) {
             return ResponseEntity.ok(updatedHistorico);
         } else {
@@ -55,4 +56,3 @@ public class HistoricoController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
-
