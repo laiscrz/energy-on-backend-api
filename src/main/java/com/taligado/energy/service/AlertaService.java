@@ -4,7 +4,7 @@ import com.taligado.energy.dto.AlertaDTO;
 import com.taligado.energy.model.Alerta;
 import com.taligado.energy.model.Sensor;
 import com.taligado.energy.repository.IAlertaRepository;
-import com.taligado.energy.repository.ISensorRepository; // Adicionei o repositório para buscar o Sensor
+import com.taligado.energy.repository.ISensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class AlertaService {
     private IAlertaRepository alertaRepository;
 
     @Autowired
-    private ISensorRepository sensorRepository; // Repositório para buscar o Sensor
+    private ISensorRepository sensorRepository;
 
     // Buscar todos os alertas
     public List<AlertaDTO> getAllAlertas() {
@@ -62,7 +62,7 @@ public class AlertaService {
         alertaDTO.setDescricao(alerta.getDescricao());
         alertaDTO.setSeveridade(alerta.getSeveridade());
         alertaDTO.setDataAlerta(alerta.getDataAlerta());
-        alertaDTO.setSensorId(alerta.getSensor() != null ? alerta.getSensor().getIdsensor() : null); // Mapear apenas o ID do sensor
+        alertaDTO.setSensorId(alerta.getSensor() != null ? alerta.getSensor().getIdsensor() : null);
         return alertaDTO;
     }
 

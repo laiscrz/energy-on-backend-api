@@ -71,8 +71,8 @@ public class FilialService {
         filialDTO.setTipo(filial.getTipo());
         filialDTO.setCnpjFilial(filial.getCnpjFilial());
         filialDTO.setAreaOperacional(filial.getAreaOperacional());
-        filialDTO.setEmpresaId(filial.getEmpresa().getIdempresa()); // ID da Empresa
-        filialDTO.setEnderecoId(filial.getEndereco().getIdendereco()); // ID do Endereço
+        filialDTO.setEmpresaId(filial.getEmpresa().getIdempresa());
+        filialDTO.setEnderecoId(filial.getEndereco().getIdendereco());
         return filialDTO;
     }
 

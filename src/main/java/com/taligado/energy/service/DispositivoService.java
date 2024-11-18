@@ -20,10 +20,10 @@ public class DispositivoService {
     private IDispositivoRepository dispositivoRepository;
 
     @Autowired
-    private ISensorRepository sensorRepository; // Repositório para buscar os sensores
+    private ISensorRepository sensorRepository;
 
     @Autowired
-    private IFilialRepository filialRepository; // Repositório para buscar as filiais
+    private IFilialRepository filialRepository;
 
     // Buscar todos os dispositivos e retornar como DTOs
     public List<DispositivoDTO> getAllDispositivos() {
