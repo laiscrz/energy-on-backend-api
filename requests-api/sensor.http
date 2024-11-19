@@ -1,0 +1,56 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/sensores
+Content-Type: application/json
+Accept: application/json
+
+{
+    "tipo": "Tensão de Energia",
+    "descricao": "Sensor de Tensão de Energia",
+    "unidade": "KWh",
+    "valorAtual": 22.5,
+    "tempoOperacao": 300,
+    "dispositivosIds": [
+        1
+    ],
+    "historicosIds": [
+        1
+    ]
+}
+
+###
+
+GET {{WebApi_HostAddress}}/api/sensores
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/sensores/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/sensores/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "tipo": "Tensão de Corrente",
+    "descricao": "Sensor de Tensão de Corrente",
+    "unidade": "KWh",
+    "valorAtual": 22.5,
+    "tempoOperacao": 300,
+    "dispositivosIds": [
+        1
+    ],
+    "historicosIds": [
+        1
+    ]
+}
+
+###
+DELETE {{WebApi_HostAddress}}/api/sensores/1
+Content-Type: application/json
+Accept: application/json

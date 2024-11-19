@@ -36,7 +36,7 @@ public class Dispositivo {
     private Double potenciaNominal;
 
     // Relacionamento com Sensor
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "dispositivo_sensor",
             joinColumns = @JoinColumn(name = "dispositivo_iddispositivo"),

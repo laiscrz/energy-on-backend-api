@@ -62,9 +62,12 @@ public class SensorController {
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
     public ResponseEntity<SensorDTO> createSensor(@RequestBody SensorDTO sensorDTO) {
+        System.out.println("Recebendo SensorDTO no Controller: " + sensorDTO);
         SensorDTO savedSensorDTO = sensorService.saveSensor(sensorDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedSensorDTO);
+
+        return new ResponseEntity<>(savedSensorDTO, HttpStatus.CREATED);
     }
+
 
     // Endpoint para atualizar um sensor existente
     @PutMapping("/{id}")

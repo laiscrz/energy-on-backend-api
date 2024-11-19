@@ -31,11 +31,20 @@ public class Sensor {
     @Column(name = "tempo_operacao")
     private Double tempoOperacao;
 
-    @ManyToMany(mappedBy = "sensores")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "dispositivo_sensor",
+            joinColumns = @JoinColumn(name = "dispositivo_iddispositivo"),
+            inverseJoinColumns = @JoinColumn(name = "sensor_idsensor"))
     private List<Dispositivo> dispositivos;
 
-    @ManyToMany(mappedBy = "sensores")
+    @ManyToMany
+    @JoinTable(
+            name = "historico_sensor",
+            joinColumns = @JoinColumn(name = "historico_idhistorico"),
+            inverseJoinColumns = @JoinColumn(name = "sensor_idsensor"))
     private List<Historico> historicos;
+
 
 }
 
