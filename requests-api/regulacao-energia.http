@@ -1,0 +1,43 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/regulacoes-energia
+Content-Type: application/json
+Accept: application/json
+
+{
+    "tarifaKwh": 0.48,
+    "nomeBandeira": "Amarela",
+    "tarifaAdicionalBandeira": 0.5,
+    "dataAtualizacao": "2024-11-01T03:00:00.000+00:00"
+}
+
+
+###
+
+GET {{WebApi_HostAddress}}/api/regulacoes-energia
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/regulacoes-energia/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/regulacoes-energia/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "tarifaKwh": 0.48,
+    "nomeBandeira": "Amarela",
+    "tarifaAdicionalBandeira": 0.5,
+    "dataAtualizacao": "2024-11-01T03:00:00.000+00:00"
+}
+
+###
+DELETE {{WebApi_HostAddress}}/api/regulacoes-energia/1
+Content-Type: application/json
+Accept: application/json

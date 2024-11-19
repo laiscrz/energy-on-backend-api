@@ -41,14 +41,22 @@ public class RegulacaoEnergiaService {
 
     // Atualizar uma regulação de energia existente e retornar como DTO
     public RegulacaoEnergiaDTO updateRegulacao(Integer id, RegulacaoEnergiaDTO regulacaoEnergiaDTO) {
-        if (!regulacaoEnergiaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Regulação de energia não encontrada com o ID: " + id);
-        }
-        regulacaoEnergiaDTO.setIdregulacao(id);
-        RegulacaoEnergia regulacaoEnergia = mapToEntity(regulacaoEnergiaDTO);
-        RegulacaoEnergia updatedRegulacao = regulacaoEnergiaRepository.save(regulacaoEnergia);
+        // Buscar a entidade existente
+        RegulacaoEnergia regulacaoExistente = regulacaoEnergiaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Regulação de energia não encontrada com o ID: " + id));
+
+        // Atualizar os campos
+        regulacaoExistente.setTarifaKwh(regulacaoEnergiaDTO.getTarifaKwh());
+        regulacaoExistente.setNomeBandeira(regulacaoEnergiaDTO.getNomeBandeira());
+        regulacaoExistente.setTarifaAdicionalBandeira(regulacaoEnergiaDTO.getTarifaAdicionalBandeira());
+        regulacaoExistente.setDataAtualizacao(regulacaoEnergiaDTO.getDataAtualizacao());
+
+        // Salvar a entidade atualizada
+        RegulacaoEnergia updatedRegulacao = regulacaoEnergiaRepository.save(regulacaoExistente);
+
         return mapToDTO(updatedRegulacao);
     }
+
 
     // Excluir uma regulação de energia
     public void deleteRegulacao(Integer id) {

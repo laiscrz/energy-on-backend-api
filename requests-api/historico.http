@@ -1,0 +1,51 @@
+@WebApi_HostAddress = http://localhost:8080
+
+POST {{WebApi_HostAddress}}/api/historicos
+Content-Type: application/json
+Accept: application/json
+
+{
+    "dataCriacao": "2024-11-15T03:00:00.000+00:00",
+    "valorConsumoKwh": 250.5,
+    "intensidadeCarbono": 0.5,
+    "custoEnergiaEstimado": 120.75,
+    "regulacaoEnergiaId": 1,
+    "sensoresIds": [
+        1
+    ]
+}
+
+###
+
+GET {{WebApi_HostAddress}}/api/historicos
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/historicos/1
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{WebApi_HostAddress}}/api/historicos/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "dataCriacao": "2024-11-15T03:00:00.000+00:00",
+    "valorConsumoKwh": 260.5,
+    "intensidadeCarbono": 0.51,
+    "custoEnergiaEstimado": 120.75,
+    "regulacaoEnergiaId": 1,
+    "sensoresIds": [
+        1
+    ]
+}
+
+###
+
+DELETE {{WebApi_HostAddress}}/api/historicos/1
+Content-Type: application/json
+Accept: application/json

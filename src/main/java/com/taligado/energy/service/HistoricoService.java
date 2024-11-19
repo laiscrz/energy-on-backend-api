@@ -49,14 +49,33 @@ public class HistoricoService {
 
     // Atualizar um histórico existente
     public HistoricoDTO updateHistorico(Integer id, HistoricoDTO historicoDTO) {
-        if (!historicoRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Histórico não encontrado com o ID: " + id);
+        // Buscar o histórico existente
+        Historico historicoExistente = historicoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Histórico não encontrado com o ID: " + id));
+
+        // Atualizar apenas os campos necessários
+        historicoExistente.setDataCriacao(historicoDTO.getDataCriacao());
+        historicoExistente.setValorConsumoKwh(historicoDTO.getValorConsumoKwh());
+        historicoExistente.setIntensidadeCarbono(historicoDTO.getIntensidadeCarbono());
+        historicoExistente.setCustoEnergiaEstimado(historicoDTO.getCustoEnergiaEstimado());
+
+        // Atualizar a regulacaoEnergia caso o ID tenha sido fornecido
+        if (historicoDTO.getRegulacaoEnergiaId() != null) {
+            Optional<RegulacaoEnergia> regulacaoEnergia = regulacaoEnergiaRepository.findById(historicoDTO.getRegulacaoEnergiaId());
+            regulacaoEnergia.ifPresent(historicoExistente::setRegulacaoEnergia);
         }
-        historicoDTO.setIdhistorico(id);
-        Historico historico = mapToEntity(historicoDTO);
-        Historico updatedHistorico = historicoRepository.save(historico);
+
+        // Atualizar os sensores caso haja novos IDs fornecidos
+        if (historicoDTO.getSensoresIds() != null) {
+            List<Sensor> sensores = sensorRepository.findAllById(historicoDTO.getSensoresIds());
+            historicoExistente.setSensores(sensores);
+        }
+
+        // Salvar o histórico atualizado
+        Historico updatedHistorico = historicoRepository.save(historicoExistente);
         return mapToDTO(updatedHistorico);
     }
+
 
     // Excluir um histórico
     public void deleteHistorico(Integer id) {
@@ -74,15 +93,22 @@ public class HistoricoService {
         historicoDTO.setValorConsumoKwh(historico.getValorConsumoKwh());
         historicoDTO.setIntensidadeCarbono(historico.getIntensidadeCarbono());
         historicoDTO.setCustoEnergiaEstimado(historico.getCustoEnergiaEstimado());
-        historicoDTO.setRegulacaoEnergiaId(historico.getRegulacaoEnergia().getIdregulacao());
+
+        // Verificar se existe RegulacaoEnergia antes de tentar acessar o ID
+        if (historico.getRegulacaoEnergia() != null) {
+            historicoDTO.setRegulacaoEnergiaId(historico.getRegulacaoEnergia().getIdregulacao());
+        }
 
         // Mapeamento dos sensores
-        historicoDTO.setSensoresIds(historico.getSensores().stream()
-                .map(Sensor::getIdsensor)
-                .collect(Collectors.toList()));
+        if (historico.getSensores() != null) {
+            historicoDTO.setSensoresIds(historico.getSensores().stream()
+                    .map(Sensor::getIdsensor)
+                    .collect(Collectors.toList()));
+        }
 
         return historicoDTO;
     }
+
 
     // Converter HistoricoDTO para Historico (entidade)
     private Historico mapToEntity(HistoricoDTO historicoDTO) {
@@ -96,7 +122,6 @@ public class HistoricoService {
         Optional<RegulacaoEnergia> regulacaoEnergia = regulacaoEnergiaRepository.findById(historicoDTO.getRegulacaoEnergiaId());
         regulacaoEnergia.ifPresent(historico::setRegulacaoEnergia);
 
-        // Buscar os sensores com base nos IDs
         List<Sensor> sensores = sensorRepository.findAllById(historicoDTO.getSensoresIds());
         historico.setSensores(sensores);
 
