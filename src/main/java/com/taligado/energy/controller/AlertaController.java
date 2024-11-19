@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/alertas")
@@ -54,15 +55,21 @@ public class AlertaController {
     @PostMapping
     @Operation(
             summary = "Salvar novo alerta",
-            description = "Cria um novo alerta no sistema."
+            description = "Cria um novo alerta no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Alerta criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<AlertaDTO> createAlerta(@RequestBody AlertaDTO alertaDTO) {
-        AlertaDTO savedAlerta = alertaService.saveAlerta(alertaDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedAlerta);
+    public ResponseEntity<Object> createAlerta(@RequestBody AlertaDTO alertaDTO) {
+        try {
+            AlertaDTO savedAlerta = alertaService.saveAlerta(alertaDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedAlerta);
+        } catch (Exception e) {
+            // Retorna JSON com mensagem de erro
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Erro ao criar alerta", "details", e.getMessage()));
+        }
     }
 
     // Endpoint para atualizar um alerta existente

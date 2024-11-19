@@ -5,9 +5,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
+    "idalerta" : 10,
     "descricao": "Alerta de sobrecarga de energia",
     "severidade": "Alta",
-    "dataAlerta": "2024-11-15T03:00:00.000+00:00",
+    "dataAlerta": "2024-11-15",
     "sensorId": 1
 }
 

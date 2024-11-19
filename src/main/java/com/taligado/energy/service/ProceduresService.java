@@ -1,9 +1,6 @@
 package com.taligado.energy.service;
 
-import com.taligado.energy.dto.EmpresaDTO;
-import com.taligado.energy.dto.EnderecoDTO;
-import com.taligado.energy.dto.FilialDTO;
-import com.taligado.energy.dto.RegulacaoEnergiaDTO;
+import com.taligado.energy.dto.*;
 import com.taligado.energy.utils.FormatData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -173,7 +170,45 @@ public class ProceduresService {
         }
     }
 
+    public String inserirAlertaProcedure(AlertaDTO alertaDTO) {
+        try {
+            String dataAlertaFormatada = FormatData.formatarData(String.valueOf(alertaDTO.getDataAlerta()));
 
+            // Formatação de data para o formato correto
+            SimpleDateFormat sdfEntrada = new SimpleDateFormat("dd/MM/yy");
+            java.util.Date dataAlerta = sdfEntrada.parse(dataAlertaFormatada);
+            java.sql.Date dataAlertaSql = new java.sql.Date(dataAlerta.getTime());
+            // Preparar o SQL para chamar a procedure PL/SQL de alerta
+            String sql = "BEGIN " +
+                    "pkg_insercao_dados.inserir_alerta(?, ?, ?, ?, ?); " +
+                    "END;";
+
+            // Executar a chamada à procedure
+            int rowsAffected = jdbcTemplate.update(sql,
+                    alertaDTO.getIdalerta(),
+                    alertaDTO.getDescricao(),
+                    alertaDTO.getSeveridade(),
+                    dataAlertaSql,
+                    alertaDTO.getSensorId()
+            );
+
+            if (rowsAffected > 0) {
+                return "Alerta criado com sucesso via PROCEDURE!";
+            } else {
+                throw new RuntimeException("Nenhuma linha foi inserida.");
+            }
+
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("Já existe um alerta com este ID")) {
+                throw new RuntimeException("Erro: Já existe um alerta com este ID.");
+            } else if (errorMessage.contains("Erro de tipo de dados ao inserir alerta")) {
+                throw new RuntimeException("Erro: Verifique os tipos de dados.");
+            } else {
+                throw new RuntimeException("Erro desconhecido ao inserir alerta: " + e.getMessage(), e);
+            }
+        }
+    }
 
 
 

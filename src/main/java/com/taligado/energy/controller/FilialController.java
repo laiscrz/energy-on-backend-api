@@ -55,7 +55,7 @@ public class FilialController {
     @PostMapping
     @Operation(
             summary = "Salvar nova filial",
-            description = "Cria uma nova filial no sistema tilizando uma procedure do banco de dados."
+            description = "Cria uma nova filial no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Filial criada com sucesso"),

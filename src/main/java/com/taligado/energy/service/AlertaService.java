@@ -22,6 +22,9 @@ public class AlertaService {
     @Autowired
     private ISensorRepository sensorRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
     // Buscar todos os alertas e retornar como DTOs
     public List<AlertaDTO> getAllAlertas() {
         List<Alerta> alertas = alertaRepository.findAll();
@@ -39,9 +42,17 @@ public class AlertaService {
 
     // Salvar um novo alerta e retornar como DTO
     public AlertaDTO saveAlerta(AlertaDTO alertaDTO) {
-        Alerta alerta = mapToEntity(alertaDTO);
-        Alerta savedAlerta = alertaRepository.save(alerta);
-        return mapToDTO(savedAlerta);
+       try {
+           String resultadoProcedure = proceduresService.inserirAlertaProcedure(alertaDTO);
+
+           if ("Alerta criado com sucesso via PROCEDURE!".equals(resultadoProcedure)) {
+               return alertaDTO;
+           } else {
+               throw new RuntimeException("Erro ao inserir alerta via procedure.");
+           }
+       } catch (Exception e) {
+           throw new RuntimeException("Erro ao criar alerta: " + e.getMessage(), e);
+       }
     }
 
     public AlertaDTO updateAlerta(Integer id, AlertaDTO alertaDTO) {
