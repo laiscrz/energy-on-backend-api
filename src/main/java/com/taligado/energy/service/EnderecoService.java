@@ -17,6 +17,9 @@ public class EnderecoService {
     @Autowired
     private IEnderecoRepository enderecoRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
     // Buscar todos os endereços e retornar como DTOs
     public List<EnderecoDTO> getAllEnderecos() {
         List<Endereco> enderecos = enderecoRepository.findAll();
@@ -34,9 +37,20 @@ public class EnderecoService {
 
     // Salvar um novo endereço e retornar como DTO
     public EnderecoDTO saveEndereco(EnderecoDTO enderecoDTO) {
-        Endereco endereco = mapToEntity(enderecoDTO);
-        Endereco savedEndereco = enderecoRepository.save(endereco);
-        return mapToDTO(savedEndereco);
+        try {
+            // Chama a procedure para inserir o endereço
+            String resultadoProcedure = proceduresService.inserirEnderecoProcedure(enderecoDTO);
+
+            // Verifica o resultado da procedure
+            if ("Endereço criado com sucesso via PROCEDURE!".equals(resultadoProcedure)) {
+                // Se a inserção for bem-sucedida, retorna o DTO do endereço
+                return enderecoDTO; // Retorna o DTO recebido, você pode enriquecer se necessário
+            } else {
+                throw new RuntimeException("Erro ao inserir endereço via procedure.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao criar endereço: " + e.getMessage(), e);
+        }
     }
 
     public EnderecoDTO updateEndereco(Integer id, EnderecoDTO enderecoDTO) {

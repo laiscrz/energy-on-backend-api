@@ -19,6 +19,9 @@ public class EmpresaService {
     @Autowired
     private IEmpresaRepository empresaRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
     // Buscar todas as empresas e retornar como DTOs
     public List<EmpresaDTO> getAllEmpresas() {
         List<Empresa> empresas = empresaRepository.findAll();
@@ -34,12 +37,22 @@ public class EmpresaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada com o ID: " + id));
     }
 
-    // Salvar uma nova empresa e retornar como DTO
     public EmpresaDTO saveEmpresa(EmpresaDTO empresaDTO) {
-        Empresa empresa = mapToEntity(empresaDTO);
-        Empresa savedEmpresa = empresaRepository.save(empresa);
-        return mapToDTO(savedEmpresa);
+        try {
+            // Chama a procedure para inserir a empresa
+            String resultadoProcedure = proceduresService.inserirEmpresaProcedure(empresaDTO);
+
+            if ("Empresa criada com sucesso via PROCEDURE!".equals(resultadoProcedure)) {
+                return empresaDTO;
+            } else {
+                throw new RuntimeException("Erro ao inserir empresa via procedure.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao criar empresa: " + e.getMessage(), e);
+        }
     }
+
+
 
     // Atualizar uma empresa existente e retornar como DTO
     public EmpresaDTO updateEmpresa(Integer id, EmpresaDTO empresaDTO) {

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/empresas")
@@ -54,15 +55,22 @@ public class EmpresaController {
     @PostMapping
     @Operation(
             summary = "Salvar nova empresa",
-            description = "Cria uma nova empresa no sistema."
+            description = "Cria uma nova empresa no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Empresa criada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<EmpresaDTO> createEmpresa(@RequestBody EmpresaDTO empresaDTO) {
-        EmpresaDTO savedEmpresa = empresaService.saveEmpresa(empresaDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEmpresa);
+    public ResponseEntity<Object> createEmpresa(@RequestBody EmpresaDTO empresaDTO) {
+        try {
+            // Chama o método do serviço que salva a empresa usando a procedure
+            EmpresaDTO savedEmpresa = empresaService.saveEmpresa(empresaDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedEmpresa);
+        } catch (Exception e) {
+            // Retorna JSON com mensagem de erro
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Erro ao criar empresa", "details", e.getMessage()));
+        }
     }
 
     // Endpoint para atualizar uma empresa existente

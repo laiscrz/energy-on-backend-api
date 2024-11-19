@@ -9,7 +9,6 @@ import lombok.Data;
 public class Endereco {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idendereco")
     private Integer idendereco;
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/enderecos")
@@ -54,16 +55,27 @@ public class EnderecoController {
     @PostMapping
     @Operation(
             summary = "Salvar novo endereço",
-            description = "Cria um novo endereço no sistema."
+            description = "Cria um novo endereço no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<EnderecoDTO> createEndereco(@RequestBody EnderecoDTO enderecoDTO) {
-        EnderecoDTO savedEndereco = enderecoService.saveEndereco(enderecoDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEndereco);
+    public ResponseEntity<Object> createEndereco(@RequestBody EnderecoDTO enderecoDTO) {
+        try {
+            EnderecoDTO savedEndereco = enderecoService.saveEndereco(enderecoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedEndereco);
+        } catch (RuntimeException e) {
+            // Retorna JSON com mensagem de erro mais específica
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Erro ao criar endereço", "details", e.getMessage()));
+        } catch (Exception e) {
+            // Caso haja outro tipo de exceção
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Erro interno no servidor", "details", e.getMessage()));
+        }
     }
+
 
     // Endpoint para atualizar um endereço existente
     @PutMapping("/{id}")

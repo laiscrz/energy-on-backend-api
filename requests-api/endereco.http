@@ -5,6 +5,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
+    "idendereco" : 10,
     "logadouro": "Avenida Paulista",
     "cidade": "São Paulo",
     "estado": "SP",

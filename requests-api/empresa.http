@@ -5,9 +5,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "nome": "Amazon",
+  "idempresa": 10,
+  "nome": "Amazon Prime",
   "email": "contato@amazon.com",
-  "cnpj": "12.345.678/0001-90",
+  "cnpj": "12.345.678/0001",
   "segmento": "E-commerce",
   "dataFundacao": "1994-07-05"
 }
@@ -41,3 +42,4 @@ Accept: application/json
 DELETE {{WebApi_HostAddress}}/api/empresas/1
 Content-Type: application/json
 Accept: application/json
+
