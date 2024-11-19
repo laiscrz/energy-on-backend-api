@@ -27,6 +27,9 @@ public class HistoricoService {
     @Autowired
     private ISensorRepository sensorRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
     // Buscar todos os históricos
     public List<HistoricoDTO> getAllHistoricos() {
         List<Historico> historicos = historicoRepository.findAll();
@@ -42,9 +45,17 @@ public class HistoricoService {
 
     // Salvar um novo histórico
     public HistoricoDTO saveHistorico(HistoricoDTO historicoDTO) {
-        Historico historico = mapToEntity(historicoDTO);
-        Historico savedHistorico = historicoRepository.save(historico);
-        return mapToDTO(savedHistorico);
+        try {
+            String resultadoProcedure = proceduresService.inserirHistoricoProcedure(historicoDTO);
+
+            if ("Histórico e sensores associados com sucesso via PROCEDURE!".equals(resultadoProcedure)) {
+                return historicoDTO;
+            } else {
+                throw new RuntimeException("Erro ao inserir historico via procedure.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao criar historico: " + e.getMessage(), e);
+        }
     }
 
     // Atualizar um histórico existente

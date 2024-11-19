@@ -2,7 +2,7 @@ package com.taligado.energy.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data

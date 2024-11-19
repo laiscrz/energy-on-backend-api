@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -55,15 +56,21 @@ public class HistoricoController {
     @PostMapping
     @Operation(
             summary = "Salvar novo histórico",
-            description = "Cria um novo histórico de consumo de energia no sistema."
+            description = "Cria um novo histórico de consumo de energia no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Histórico criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<HistoricoDTO> createHistorico(@RequestBody HistoricoDTO historicoDTO) {
-        HistoricoDTO createdHistorico = historicoService.saveHistorico(historicoDTO);
-        return new ResponseEntity<>(createdHistorico, HttpStatus.CREATED);
+    public ResponseEntity<Object> createHistorico(@RequestBody HistoricoDTO historicoDTO) {
+       try {
+           HistoricoDTO createdHistorico = historicoService.saveHistorico(historicoDTO);
+           return new ResponseEntity<>(createdHistorico, HttpStatus.CREATED);
+       } catch (Exception e) {
+           // Retorna JSON com mensagem de erro
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                   .body(Map.of("error", "Erro ao criar historico", "details", e.getMessage()));
+       }
     }
 
     // Endpoint para atualizar um histórico existente

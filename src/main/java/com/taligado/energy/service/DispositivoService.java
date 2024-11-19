@@ -26,6 +26,9 @@ public class DispositivoService {
     @Autowired
     private IFilialRepository filialRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
     // Buscar todos os dispositivos e retornar como DTOs
     public List<DispositivoDTO> getAllDispositivos() {
         List<Dispositivo> dispositivos = dispositivoRepository.findAll();
@@ -42,9 +45,17 @@ public class DispositivoService {
 
     // Salvar um novo dispositivo e retornar como DTO
     public DispositivoDTO saveDispositivo(DispositivoDTO dispositivoDTO) {
-        Dispositivo dispositivo = mapToEntity(dispositivoDTO);
-        Dispositivo savedDispositivo = dispositivoRepository.save(dispositivo);
-        return mapToDTO(savedDispositivo);
+       try {
+           String resultadoProcedure = proceduresService.inserirDispositivoProcedure(dispositivoDTO);
+
+           if ("Dispositivo e sensores associados com sucesso via PROCEDURE!".equals(resultadoProcedure)) {
+               return dispositivoDTO;
+           } else {
+               throw new RuntimeException("Erro ao inserir dispositivo via procedure.");
+           }
+       } catch (Exception e) {
+           throw new RuntimeException("Erro ao criar dispositivo: " + e.getMessage(), e);
+       }
     }
 
     public DispositivoDTO updateDispositivo(Integer id, DispositivoDTO dispositivoDTO) {

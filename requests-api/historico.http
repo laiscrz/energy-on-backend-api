@@ -5,10 +5,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "dataCriacao": "2024-11-15T03:00:00.000+00:00",
-    "valorConsumoKwh": 250.5,
-    "intensidadeCarbono": 0.5,
-    "custoEnergiaEstimado": 120.75,
+    "idhistorico" : 10,
+    "dataCriacao": "2024-11-15",
+    "intensidadeCarbono": 0.57,
     "regulacaoEnergiaId": 1,
     "sensoresIds": [
         1

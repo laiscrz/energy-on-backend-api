@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sensores")
@@ -55,17 +56,22 @@ public class SensorController {
     @PostMapping
     @Operation(
             summary = "Salvar novo sensor",
-            description = "Cria um novo sensor no sistema."
+            description = "Cria um novo sensor no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Sensor criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<SensorDTO> createSensor(@RequestBody SensorDTO sensorDTO) {
-        System.out.println("Recebendo SensorDTO no Controller: " + sensorDTO);
-        SensorDTO savedSensorDTO = sensorService.saveSensor(sensorDTO);
+    public ResponseEntity<Object> createSensor(@RequestBody SensorDTO sensorDTO) {
+       try {
+           SensorDTO savedSensorDTO = sensorService.saveSensor(sensorDTO);
 
-        return new ResponseEntity<>(savedSensorDTO, HttpStatus.CREATED);
+           return new ResponseEntity<>(savedSensorDTO, HttpStatus.CREATED);
+       } catch (Exception e) {
+           // Retorna JSON com mensagem de erro
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                   .body(Map.of("error", "Erro ao criar sensor", "details", e.getMessage()));
+       }
     }
 
 

@@ -5,10 +5,11 @@ Content-Type: application/json
 Accept: application/json
 
 {
+    "iddispositivo" : 10,
     "nome": "LG Split",
     "tipo": "Ar-condicionado",
     "status": "Ativo",
-    "dataInstalacao": "2024-01-15T03:00:00.000+00:00",
+    "dataInstalacao": "2024-01-15",
     "filialId": 1,
     "potenciaNominal": 2.5,
     "sensoresIds": [
@@ -38,8 +39,8 @@ Accept: application/json
 {
     "nome": "LG Split",
     "tipo": "Ar-condicionado",
-    "status": "Ativo",
-    "dataInstalacao": "2024-01-15T03:00:00.000+00:00",
+    "status": "Resolvido",
+    "dataInstalacao": "2024-01-15",
     "filialId": 1,
     "potenciaNominal": 3.5,
     "sensoresIds": [

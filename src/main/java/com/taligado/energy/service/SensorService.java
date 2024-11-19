@@ -27,6 +27,9 @@ public class SensorService {
     @Autowired
     private IHistoricoRepository historicoRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
 
     // Buscar todos os sensores e retornar como DTOs
     public List<SensorDTO> getAllSensores() {
@@ -44,13 +47,16 @@ public class SensorService {
     }
 
     public SensorDTO saveSensor(SensorDTO sensorDTO) {
-        Sensor sensor = mapToEntity(sensorDTO);
-
-        Sensor savedSensor = sensorRepository.save(sensor);
-
-        System.out.println("Sensor salvo com ID: " + savedSensor.getIdsensor());
-
-        return mapToDTO(savedSensor);
+        try {
+            String resultadoProcedure = proceduresService.inserirSensorProcedure(sensorDTO);
+            if ("Sensor inserido com sucesso e associado a dispositivos e históricos via PROCEDURE!".equals(resultadoProcedure)) {
+                return sensorDTO;
+            } else {
+                throw new RuntimeException("Erro ao inserir sensor via procedure.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao criar sensor: " + e.getMessage(), e);
+        }
     }
 
 

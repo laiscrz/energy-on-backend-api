@@ -3,7 +3,7 @@ package com.taligado.energy.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -12,7 +12,6 @@ import java.util.List;
 public class Dispositivo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "iddispositivo")
     private Integer iddispositivo;
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dispositivos")
@@ -55,15 +56,21 @@ public class DispositivoController {
     @PostMapping
     @Operation(
             summary = "Salvar novo dispositivo",
-            description = "Cria um novo dispositivo no sistema."
+            description = "Cria um novo dispositivo no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dispositivo criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<DispositivoDTO> createDispositivo(@RequestBody DispositivoDTO dispositivoDTO) {
-        DispositivoDTO savedDispositivoDTO = dispositivoService.saveDispositivo(dispositivoDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedDispositivoDTO);
+    public ResponseEntity<Object> createDispositivo(@RequestBody DispositivoDTO dispositivoDTO) {
+        try {
+            DispositivoDTO savedDispositivoDTO = dispositivoService.saveDispositivo(dispositivoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedDispositivoDTO);
+        } catch (Exception e) {
+            // Retorna JSON com mensagem de erro
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Erro ao criar dispositivo", "details", e.getMessage()));
+        }
     }
 
     // Endpoint para atualizar um dispositivo existente

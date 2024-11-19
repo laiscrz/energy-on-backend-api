@@ -2,6 +2,8 @@ package com.taligado.energy.service;
 
 import com.taligado.energy.dto.*;
 import com.taligado.energy.utils.FormatData;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ public class ProceduresService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     // Método para chamar a procedure de inserção de empresa
     public String inserirEmpresaProcedure(EmpresaDTO empresaDTO) {
@@ -209,6 +214,171 @@ public class ProceduresService {
             }
         }
     }
+
+    public String inserirDispositivoProcedure(DispositivoDTO dispositivoDTO) {
+        try {
+            // Formatar a data de instalação
+            String dataInstalacaoFormatada = FormatData.formatarData(String.valueOf(dispositivoDTO.getDataInstalacao()));
+
+            SimpleDateFormat sdfEntrada = new SimpleDateFormat("dd/MM/yy");
+            java.util.Date dataInstalacao = sdfEntrada.parse(dataInstalacaoFormatada);
+            java.sql.Date dataInstalacaoSql = new java.sql.Date(dataInstalacao.getTime());
+
+            // Preparar SQL para chamar a procedure de inserção de dispositivo
+            String sqlDispositivo = "BEGIN " +
+                    "pkg_insercao_dados.inserir_dispositivo(?, ?, ?, ?, ?, ?, ?); " +
+                    "END;";
+
+            // Executar a chamada para inserir o dispositivo
+            jdbcTemplate.update(sqlDispositivo,
+                    dispositivoDTO.getIddispositivo(),
+                    dispositivoDTO.getNome(),
+                    dispositivoDTO.getTipo(),
+                    dispositivoDTO.getStatus(),
+                    dataInstalacaoSql,
+                    dispositivoDTO.getFilialId(),
+                    dispositivoDTO.getPotenciaNominal()
+            );
+
+            // Iterar pelos IDs dos sensores e associá-los ao dispositivo
+            String sqlDispositivoSensor = "BEGIN " +
+                    "pkg_insercao_dados.inserir_dispositivo_sensor(?, ?); " +
+                    "END;";
+
+            for (Integer sensorId : dispositivoDTO.getSensoresIds()) {
+                jdbcTemplate.update(sqlDispositivoSensor,
+                        dispositivoDTO.getIddispositivo(),
+                        sensorId
+                );
+            }
+
+            return "Dispositivo e sensores associados com sucesso via PROCEDURE!";
+
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("DUP_VAL_ON_INDEX")) {
+                throw new RuntimeException("Erro: Já existe um dispositivo com este ID ou relacionamento duplicado.");
+            } else if (errorMessage.contains("VALUE_ERROR")) {
+                throw new RuntimeException("Erro: Verifique os tipos de dados.");
+            } else {
+                throw new RuntimeException("Erro desconhecido ao inserir dispositivo: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    public String inserirHistoricoProcedure(HistoricoDTO historicoDTO) {
+        try {
+            // Formatar a data de criação
+            String dataCriacaoFormatada = FormatData.formatarData(String.valueOf(historicoDTO.getDataCriacao()));
+            SimpleDateFormat sdfEntrada = new SimpleDateFormat("dd/MM/yy");
+            java.util.Date dataCriacao = sdfEntrada.parse(dataCriacaoFormatada);
+            java.sql.Date dataCriacaoSql = new java.sql.Date(dataCriacao.getTime());
+
+            // Chamar a procedure de inserção do histórico
+            String sqlHistorico = "BEGIN " +
+                    "pkg_insercao_dados.inserir_historico(?, ?, ?, ?, ?); " +
+                    "END;";
+
+            jdbcTemplate.update(sqlHistorico,
+                    historicoDTO.getIdhistorico(),
+                    dataCriacaoSql,
+                    historicoDTO.getIntensidadeCarbono(),
+                    historicoDTO.getSensoresIds().get(0),
+                    historicoDTO.getRegulacaoEnergiaId()
+            );
+
+            // Associar sensores ao histórico na tabela intermediária
+            String sqlHistoricoSensor = "BEGIN " +
+                    "pkg_insercao_dados.inserir_historico_sensor(?, ?); " +
+                    "END;";
+
+            for (Integer sensorId : historicoDTO.getSensoresIds()) {
+                jdbcTemplate.update(sqlHistoricoSensor,
+                        historicoDTO.getIdhistorico(),
+                        sensorId
+                );
+            }
+
+            return "Histórico e sensores associados com sucesso via PROCEDURE!";
+
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("DUP_VAL_ON_INDEX")) {
+                throw new RuntimeException("Erro: Já existe um histórico com este ID ou relacionamento duplicado.");
+            } else if (errorMessage.contains("VALUE_ERROR")) {
+                throw new RuntimeException("Erro: Verifique os tipos de dados.");
+            } else {
+                throw new RuntimeException("Erro desconhecido ao inserir histórico: " + e.getMessage(), e);
+            }
+        }
+    }
+
+
+    public String inserirSensorProcedure(SensorDTO sensorDTO) {
+        try {
+            // Preparar o SQL para chamar a procedure PL/SQL de inserção de sensor
+            String sqlSensor = "BEGIN " +
+                    "pkg_insercao_dados.inserir_sensor(?, ?, ?, ?, ?, ?); " +
+                    "END;";
+
+            // Executar a chamada à procedure para inserir o sensor
+            int rowsAffected = jdbcTemplate.update(sqlSensor,
+                    sensorDTO.getIdsensor(),
+                    sensorDTO.getTipo(),
+                    sensorDTO.getDescricao(),
+                    sensorDTO.getUnidade(),
+                    sensorDTO.getValorAtual(),
+                    sensorDTO.getTempoOperacao()
+            );
+
+            if (rowsAffected > 0) {
+                // Se inserção do sensor for bem-sucedida, associamos o sensor com dispositivos e históricos, se necessário.
+                if (sensorDTO.getDispositivosIds() != null && !sensorDTO.getDispositivosIds().isEmpty()) {
+                    // Inserir associação com os dispositivos
+                    String sqlDispositivoSensor = "BEGIN " +
+                            "pkg_insercao_dados.inserir_dispositivo_sensor(?, ?); " +
+                            "END;";
+
+                    for (Integer dispositivoId : sensorDTO.getDispositivosIds()) {
+                        jdbcTemplate.update(sqlDispositivoSensor,
+                                dispositivoId,
+                                sensorDTO.getIdsensor()
+                        );
+                    }
+                }
+
+                if (sensorDTO.getHistoricosIds() != null && !sensorDTO.getHistoricosIds().isEmpty()) {
+                    // Inserir associação com os históricos
+                    String sqlHistoricoSensor = "BEGIN " +
+                            "pkg_insercao_dados.inserir_historico_sensor(?, ?); " +
+                            "END;";
+
+                    for (Integer historicoId : sensorDTO.getHistoricosIds()) {
+                        jdbcTemplate.update(sqlHistoricoSensor,
+                                historicoId,
+                                sensorDTO.getIdsensor()
+                        );
+                    }
+                }
+
+                return "Sensor inserido com sucesso e associado a dispositivos e históricos via PROCEDURE!";
+            } else {
+                throw new RuntimeException("Nenhuma linha foi inserida.");
+            }
+
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("Já existe um sensor com este ID")) {
+                throw new RuntimeException("Erro: Já existe um sensor com este ID.");
+            } else if (errorMessage.contains("Erro de tipo de dados ao inserir sensor")) {
+                throw new RuntimeException("Erro: Verifique os tipos de dados.");
+            } else {
+                throw new RuntimeException("Erro desconhecido ao inserir sensor: " + e.getMessage(), e);
+            }
+        }
+    }
+
+
 
 
 

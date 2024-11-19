@@ -5,16 +5,17 @@ Content-Type: application/json
 Accept: application/json
 
 {
+    "idsensor" : 10,
     "tipo": "Tensão de Energia",
     "descricao": "Sensor de Tensão de Energia",
     "unidade": "KWh",
     "valorAtual": 22.5,
     "tempoOperacao": 300,
     "dispositivosIds": [
-        1
+        10
     ],
     "historicosIds": [
-        1
+        10
     ]
 }
 

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -13,7 +13,6 @@ import java.util.List;
 public class Historico {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idhistorico")
     private Integer idhistorico;
 
