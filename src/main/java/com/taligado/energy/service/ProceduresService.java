@@ -2,8 +2,6 @@ package com.taligado.energy.service;
 
 import com.taligado.energy.dto.*;
 import com.taligado.energy.utils.FormatData;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -15,9 +13,6 @@ public class ProceduresService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     // Método para chamar a procedure de inserção de empresa
     public String inserirEmpresaProcedure(EmpresaDTO empresaDTO) {
