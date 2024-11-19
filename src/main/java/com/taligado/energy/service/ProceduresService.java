@@ -2,6 +2,8 @@ package com.taligado.energy.service;
 
 import com.taligado.energy.dto.EmpresaDTO;
 import com.taligado.energy.dto.EnderecoDTO;
+import com.taligado.energy.dto.FilialDTO;
+import com.taligado.energy.dto.RegulacaoEnergiaDTO;
 import com.taligado.energy.utils.FormatData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,7 +22,7 @@ public class ProceduresService {
         try {
 
             // Formatar a data de fundação
-            String dataFundacaoFormatada = FormatData.formatarDataFundacao(String.valueOf(empresaDTO.getDataFundacao()));
+            String dataFundacaoFormatada = FormatData.formatarData(String.valueOf(empresaDTO.getDataFundacao()));
 
             // O formato correto do Oracle é dd/MM/yy
             SimpleDateFormat sdfEntrada = new SimpleDateFormat("dd/MM/yy");
@@ -89,6 +91,90 @@ public class ProceduresService {
             }
         }
     }
+
+    public String inserirFilialProcedure(FilialDTO filialDTO) {
+        try {
+            // Preparar o SQL para chamar a procedure PL/SQL
+            String sql = "BEGIN " +
+                    "pkg_insercao_dados.inserir_filial(?, ?, ?, ?, ?, ?, ?); " +
+                    "END;";
+
+            // Executando o SQL de chamada à procedure
+            int rowsAffected = jdbcTemplate.update(sql,
+                    filialDTO.getIdfilial(),
+                    filialDTO.getNome(),
+                    filialDTO.getTipo(),
+                    filialDTO.getCnpjFilial(),
+                    filialDTO.getAreaOperacional(),
+                    filialDTO.getEmpresaId(),      // ID da empresa
+                    filialDTO.getEnderecoId()      // ID do endereço
+            );
+
+            // Verifica se a inserção foi bem-sucedida
+            if (rowsAffected > 0) {
+                return "Filial criada com sucesso via PROCEDURE!";
+            } else {
+                throw new RuntimeException("Nenhuma linha foi inserida.");
+            }
+
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("Já existe uma filial com este ID")) {
+                throw new RuntimeException("Erro: Já existe uma filial com este ID.");
+            } else if (errorMessage.contains("Erro de tipo de dados ao inserir filial")) {
+                throw new RuntimeException("Erro: Verifique os tipos de dados.");
+            } else {
+                throw new RuntimeException("Erro desconhecido ao inserir filial: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    public String inserirRegulacaoEnergiaProcedure(RegulacaoEnergiaDTO regulacaoEnergiaDTO) {
+        try {
+            String dataAtualizacaoFormatada = FormatData.formatarData(String.valueOf(regulacaoEnergiaDTO.getDataAtualizacao()));
+
+            // Formatação de data para o formato correto
+            SimpleDateFormat sdfEntrada = new SimpleDateFormat("dd/MM/yy");
+            java.util.Date dataAtualizacao = sdfEntrada.parse(dataAtualizacaoFormatada);
+            java.sql.Date dataAtualizacaoSql = new java.sql.Date(dataAtualizacao.getTime());
+
+            // Preparar o SQL para chamar a procedure PL/SQL
+            String sql = "BEGIN " +
+                    "pkg_insercao_dados.inserir_regulacao_energia(?, ?, ?, ?, ?); " +
+                    "END;";
+
+            // Executando o SQL de chamada à procedure
+            int rowsAffected = jdbcTemplate.update(sql,
+                    regulacaoEnergiaDTO.getIdregulacao(),
+                    regulacaoEnergiaDTO.getTarifaKwh(),
+                    regulacaoEnergiaDTO.getNomeBandeira(),
+                    regulacaoEnergiaDTO.getTarifaAdicionalBandeira(),
+                    dataAtualizacaoSql
+            );
+
+            // Verifica se a inserção foi bem-sucedida
+            if (rowsAffected > 0) {
+                System.out.println("Regulação de energia criada com sucesso!");
+                return "Regulação de energia criada com sucesso via PROCEDURE!";
+            } else {
+                System.out.println("Nenhuma linha foi inserida.");
+                throw new RuntimeException("Nenhuma linha foi inserida.");
+            }
+
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("Já existe uma regulaçaão de energia com este ID")) {
+                throw new RuntimeException("Erro: Já existe uma regulaçaão de energia com este ID.");
+            } else if (errorMessage.contains("Erro de tipo de dados ao inserir regulaçaão de energia")) {
+                throw new RuntimeException("Erro: Verifique os tipos de dados.");
+            } else {
+                throw new RuntimeException("Erro desconhecido ao inserir regulaçaão de energia: " + e.getMessage(), e);
+            }
+        }
+    }
+
+
+
 
 
 }

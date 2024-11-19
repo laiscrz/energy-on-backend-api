@@ -5,10 +5,11 @@ Content-Type: application/json
 Accept: application/json
 
 {
+    "idregulacao" : 10,
     "tarifaKwh": 0.48,
     "nomeBandeira": "Amarela",
     "tarifaAdicionalBandeira": 0.5,
-    "dataAtualizacao": "2024-11-01T03:00:00.000+00:00"
+    "dataAtualizacao": "2024-04-01"
 }
 
 
@@ -34,7 +35,7 @@ Accept: application/json
     "tarifaKwh": 0.48,
     "nomeBandeira": "Amarela",
     "tarifaAdicionalBandeira": 0.5,
-    "dataAtualizacao": "2024-11-01T03:00:00.000+00:00"
+    "dataAtualizacao": "2024-11-01"
 }
 
 ###

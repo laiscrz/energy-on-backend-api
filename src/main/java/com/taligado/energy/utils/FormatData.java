@@ -7,7 +7,7 @@ import java.util.Date;
 public class FormatData {
 
     // Método para formatar a data fornecida no formato 'yyyy-MM-dd' para 'dd/MM/yy' (esperado pelo Oracle)
-    public static String formatarDataFundacao(String data) {
+    public static String formatarData(String data) {
         String dataFormatada = null;
         try {
             if (data != null && !data.isEmpty()) {

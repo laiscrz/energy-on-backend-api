@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/regulacoes-energia")
@@ -55,16 +56,25 @@ public class RegulacaoEnergiaController {
     @PostMapping
     @Operation(
             summary = "Salvar nova regulação de energia",
-            description = "Cria uma nova regulação de energia no sistema."
+            description = "Cria uma nova regulação de energia no sistema utilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Regulação de energia criada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<RegulacaoEnergiaDTO> createRegulacaoEnergia(@RequestBody RegulacaoEnergiaDTO regulacaoEnergiaDTO) {
-        RegulacaoEnergiaDTO savedRegulacaoEnergiaDTO = regulacaoEnergiaService.saveRegulacao(regulacaoEnergiaDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedRegulacaoEnergiaDTO);
+    public ResponseEntity<Object> createRegulacaoEnergia(@RequestBody RegulacaoEnergiaDTO regulacaoEnergiaDTO) {
+        try {
+
+            RegulacaoEnergiaDTO savedRegulacaoEnergiaDTO = regulacaoEnergiaService.saveRegulacao(regulacaoEnergiaDTO);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedRegulacaoEnergiaDTO);
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao criar regulação de energia: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Erro ao criar regulação de energia", "details", e.getMessage()));
+        }
     }
+
 
     // Endpoint para atualizar uma regulação de energia existente
     @PutMapping("/{id}")

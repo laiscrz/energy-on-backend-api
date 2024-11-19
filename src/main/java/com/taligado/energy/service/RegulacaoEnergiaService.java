@@ -17,6 +17,9 @@ public class RegulacaoEnergiaService {
     @Autowired
     private IRegulacaoEnergiaRepository regulacaoEnergiaRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
     // Buscar todas as regulações de energia e retornar como DTOs
     public List<RegulacaoEnergiaDTO> getAllRegulacoes() {
         List<RegulacaoEnergia> regulacoes = regulacaoEnergiaRepository.findAll();
@@ -34,9 +37,17 @@ public class RegulacaoEnergiaService {
 
     // Salvar uma nova regulação de energia e retornar como DTO
     public RegulacaoEnergiaDTO saveRegulacao(RegulacaoEnergiaDTO regulacaoEnergiaDTO) {
-        RegulacaoEnergia regulacaoEnergia = mapToEntity(regulacaoEnergiaDTO);
-        RegulacaoEnergia savedRegulacao = regulacaoEnergiaRepository.save(regulacaoEnergia);
-        return mapToDTO(savedRegulacao);
+        try {
+            String resultadoProcedure = proceduresService.inserirRegulacaoEnergiaProcedure(regulacaoEnergiaDTO);
+
+            if ("Regulação de energia criada com sucesso via PROCEDURE!".equals(resultadoProcedure)) {
+                return regulacaoEnergiaDTO;
+            } else {
+                throw new RuntimeException("Erro ao inserir regulação de energia via procedure.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao criar regulação de energia: " + e.getMessage(), e);
+        }
     }
 
     // Atualizar uma regulação de energia existente e retornar como DTO

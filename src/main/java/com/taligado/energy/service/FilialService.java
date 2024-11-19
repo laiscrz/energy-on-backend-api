@@ -27,6 +27,9 @@ public class FilialService {
     @Autowired
     private IEnderecoRepository enderecoRepository;
 
+    @Autowired
+    private ProceduresService proceduresService;
+
     // Buscar todas as filiais e retornar como DTOs
     public List<FilialDTO> getAllFiliais() {
         List<Filial> filiais = filialRepository.findAll();
@@ -44,9 +47,18 @@ public class FilialService {
 
     // Salvar uma nova filial e retornar como DTO
     public FilialDTO saveFilial(FilialDTO filialDTO) {
-        Filial filial = mapToEntity(filialDTO);
-        Filial savedFilial = filialRepository.save(filial);
-        return mapToDTO(savedFilial);
+       try {
+           String resultadoProcedure = proceduresService.inserirFilialProcedure(filialDTO);
+
+           if ("Filial criada com sucesso via PROCEDURE!".equals(resultadoProcedure)) {
+               return filialDTO;
+           } else {
+               throw new RuntimeException("Erro ao inserir filial via procedure.");
+           }
+       } catch (Exception e) {
+           throw new RuntimeException("Erro ao criar filial: " + e.getMessage(), e);
+
+       }
     }
 
     public FilialDTO updateFilial(Integer id, FilialDTO filialDTO) {

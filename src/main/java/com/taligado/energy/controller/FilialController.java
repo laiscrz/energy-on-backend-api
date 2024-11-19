@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/filiais")
@@ -54,15 +55,21 @@ public class FilialController {
     @PostMapping
     @Operation(
             summary = "Salvar nova filial",
-            description = "Cria uma nova filial no sistema."
+            description = "Cria uma nova filial no sistema tilizando uma procedure do banco de dados."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Filial criada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação dos dados de entrada")
     })
-    public ResponseEntity<FilialDTO> createFilial(@RequestBody FilialDTO filialDTO) {
-        FilialDTO savedFilial = filialService.saveFilial(filialDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedFilial);
+    public ResponseEntity<Object> createFilial(@RequestBody FilialDTO filialDTO) {
+       try {
+           FilialDTO savedFilial = filialService.saveFilial(filialDTO);
+           return ResponseEntity.status(HttpStatus.CREATED).body(savedFilial);
+       } catch (Exception e) {
+           // Retorna JSON com mensagem de erro
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                   .body(Map.of("error", "Erro ao criar filial", "details", e.getMessage()));
+       }
     }
 
     // Endpoint para atualizar uma filial existente

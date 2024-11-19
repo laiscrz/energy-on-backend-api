@@ -9,7 +9,6 @@ import lombok.Data;
 public class Filial {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idfilial")
     private Integer idfilial;
 
