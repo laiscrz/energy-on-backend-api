@@ -27,7 +27,7 @@ public class JsonExportController {
 
             // Configura o cabeçalho HTTP para forçar o download
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setHeader("Content-Disposition", "attachment; filename=\"reports_export.json\"");
+            response.setHeader("Content-Disposition", "attachment; filename=\"reports_export_backend.json\"");
 
             // Instancia o ObjectMapper para formatar o JSON
             ObjectMapper objectMapper = new ObjectMapper();

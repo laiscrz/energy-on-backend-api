@@ -5,11 +5,11 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "idempresa": 10,
-  "nome": "Amazon Prime",
-  "email": "contato@amazon.com",
+  "idempresa": 110,
+  "nome": "FIAP",
+  "email": "contato@fiap.com",
   "cnpj": "12.345.678/0001",
-  "segmento": "E-commerce",
+  "segmento": "Educação",
   "dataFundacao": "1994-07-05"
 }
 
@@ -20,26 +20,26 @@ Accept: application/json
 
 ###
 
-GET {{WebApi_HostAddress}}/api/empresas/1
+GET {{WebApi_HostAddress}}/api/empresas/110
 Content-Type: application/json
 Accept: application/json
 
 ###
 
-PUT {{WebApi_HostAddress}}/api/empresas/1
+PUT {{WebApi_HostAddress}}/api/empresas/110
 Content-Type: application/json
 Accept: application/json
 
 {
-  "nome": "Amazon Brasil",
-  "email": "contato@amazon.com",
-  "cnpj": "12.345.678/0001-90",
-  "segmento": "E-commerce",
+  "nome": "FIAP Faculdade",
+  "email": "contato@fiap.com",
+  "cnpj": "12.345.678/0001",
+  "segmento": "Educação Superior",
   "dataFundacao": "1994-07-05"
 }
 
 ###
-DELETE {{WebApi_HostAddress}}/api/empresas/1
+DELETE {{WebApi_HostAddress}}/api/empresas/110
 Content-Type: application/json
 Accept: application/json
 
