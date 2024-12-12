@@ -1,5 +1,8 @@
 # 🌱⚡ **TáLigado: EnergyOn**  
 
+> **🎥 Confira o vídeo demonstrativo do projeto:**  [**Assista no YouTube**](https://www.youtube.com/watch?v=i4cEKrk8GAc)   
+
+
 **TáLigado: EnergyOn** é uma API inteligente para **monitoramento e gerenciamento de energia elétrica e emissões de carbono**, ajudando empresas e indústrias a otimizar recursos e adotar práticas sustentáveis. 🌍💡
 
 ## 🚀 **Funcionalidades**
