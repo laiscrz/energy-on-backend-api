@@ -1,11 +1,16 @@
 # 🌱⚡ **TáLigado: EnergyOn**  
 
-> **🎥 Confira o vídeo demonstrativo do projeto:**  [**Assista no YouTube**](https://www.youtube.com/watch?v=i4cEKrk8GAc)
+> **🎥 Confira o vídeo demonstrativo do projeto da disciplina de 'MASTERING RELATIONAL AND NON-RELATIONAL DATABASE':**  [**Assista no YouTube**](https://www.youtube.com/watch?v=i4cEKrk8GAc)
 
 > **🗄️ Acesse o arquivo SQL completo do projeto:** [**Arquivo .sql**](CodeSQLGlobal.sql)
 
-
 **TáLigado: EnergyOn** é uma API inteligente para **monitoramento e gerenciamento de energia elétrica e emissões de carbono**, ajudando empresas e indústrias a otimizar recursos e adotar práticas sustentáveis. 🌍💡
+
+## 🏆 **Reconhecimento Acadêmico e Premiação**  
+
+- O projeto recebeu **nota máxima** pela sua excelência técnica e inovação, destacando-se na aplicação de **bancos de dados** para resolver problemas reais de monitoramento energético e emissões de carbono.
+
+- **Vencedor do Global Solution 2024 - Green Energy**, reconhecido por sua contribuição inovadora para soluções sustentáveis no setor energético.
 
 ## 🚀 **Funcionalidades**
 
