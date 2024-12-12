@@ -8,7 +8,7 @@
 
 ## 🏆 **Reconhecimento Acadêmico e Premiação**  
 
-- O projeto recebeu **nota máxima** pela sua excelência técnica e inovação, destacando-se na aplicação de **bancos de dados** para resolver problemas reais de monitoramento energético e emissões de carbono.
+- O projeto recebeu **nota máxima** pela sua excelência técnica e inovação, destacando a solução para resolver problemas reais de monitoramento energético e emissões de carbono.
 
 - **Vencedor do Global Solution 2024 - Green Energy**, reconhecido por sua contribuição inovadora para soluções sustentáveis no setor energético.
 
