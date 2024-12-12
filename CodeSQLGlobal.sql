@@ -1147,7 +1147,7 @@ BEGIN
   -- Chama a procedure que gera o JSON
   pkg_exportacao.gerar_json(v_json);
 
-  -- Exibe o JSON gerado (você pode ajustar essa parte conforme necessário)
+  -- Exibe o JSON gerado 
   DBMS_OUTPUT.PUT_LINE(v_json);
 EXCEPTION
   WHEN OTHERS THEN
